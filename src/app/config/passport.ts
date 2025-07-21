@@ -8,7 +8,51 @@ import {
 } from "passport-google-oauth20";
 import { envVars } from "./env";
 import { User } from "../modules/user/user.model";
-import { Role } from "../modules/user/user.interface";
+import { IUSER, Role } from "../modules/user/user.interface";
+import { Strategy as LocalStrategy } from "passport-local";
+import bcrypt from "bcryptjs";
+
+passport.use(
+  new LocalStrategy(
+    {
+      usernameField: "email",
+      passwordField: "password",
+    },
+    async (email: string, password: string, done) => {
+      try {
+        const isUserExist = await User.findOne({ email });
+        if (!isUserExist) {
+          done(null, false, { message: "User does not exist!!" });
+        }
+
+        const isGoogleAuthenticated = isUserExist?.auths.some(
+          (providerObj) => providerObj.provider === "google"
+        );
+
+        if (isGoogleAuthenticated && !isUserExist?.password) {
+          return done(null, false, {
+            message:
+              "You have authenticated through google. Please login with google and set a password.",
+          });
+        }
+
+        const validPassword = await bcrypt.compare(
+          password as string,
+          isUserExist?.password as string
+        );
+
+        if (!validPassword) {
+          return done(null, false, { message: "Invalid Password!!" });
+        }
+
+        return done(null, isUserExist as IUSER);
+      } catch (error) {
+        console.log(error);
+        done(error);
+      }
+    }
+  )
+);
 
 passport.use(
   new GoogleStrategy(
