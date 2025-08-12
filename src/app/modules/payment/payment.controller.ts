@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { catchAsync } from "../../utils/catchAsync";
 import { paymentServices } from "./payment.service";
-import { envVars } from "../../config/env";
+import { envVars } from "../../configs/env";
 import { sendResponse } from "../../utils/sendResponse";
 
 const initPayment = catchAsync(async (req: Request, res: Response) => {

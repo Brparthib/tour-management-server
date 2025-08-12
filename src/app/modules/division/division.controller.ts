@@ -3,9 +3,14 @@ import { Request, Response } from "express";
 import { catchAsync } from "../../utils/catchAsync";
 import { divisionServices } from "./division.service";
 import { sendResponse } from "../../utils/sendResponse";
+import { IDivision } from "./division.interface";
 
 const createDivision = catchAsync(async (req: Request, res: Response) => {
-  const division = await divisionServices.createDivision(req.body);
+  const payload: IDivision = {
+    ...req.body,
+    thumbnail: req.file?.path,
+  };
+  const division = await divisionServices.createDivision(payload);
 
   sendResponse(res, {
     statusCode: httpStatus.CREATED,
@@ -41,7 +46,10 @@ const getSingleDivision = catchAsync(async (req: Request, res: Response) => {
 
 const updateDivision = catchAsync(async (req: Request, res: Response) => {
   const id = req.params.id;
-  const payload = req.body;
+  const payload: IDivision = {
+    ...req.body,
+    thumbnail: req.file?.path,
+  };
   const division = await divisionServices.updateDivision(id, payload);
 
   sendResponse(res, {

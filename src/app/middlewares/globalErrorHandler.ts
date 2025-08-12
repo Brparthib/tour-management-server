@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextFunction, Request, Response } from "express";
-import { envVars } from "../config/env";
+import { envVars } from "../configs/env";
 import AppError from "../errorHelpers/AppError";
 import {
   handleCastError,
@@ -11,8 +11,9 @@ import {
   handleZodError,
 } from "../errorHelpers/handleError";
 import { TErrorSources } from "../interfaces/error.types";
+import { deleteImageFromCloudinary } from "../configs/cloudinary.config";
 
-export const globalErrorHandler = (
+export const globalErrorHandler = async (
   err: any,
   req: Request,
   res: Response,
@@ -20,6 +21,18 @@ export const globalErrorHandler = (
 ) => {
   if (envVars.NODE_ENV === "development") {
     console.log(err);
+  }
+
+  if (req.file) {
+    await deleteImageFromCloudinary(req.file.path);
+  }
+
+  const files = req.files as Express.Multer.File[];
+  if (files && files.length > 0) {
+    console.log(files);
+    await Promise.all(
+      files.map((file) => deleteImageFromCloudinary(file.path))
+    );
   }
 
   let statusCode = 500;

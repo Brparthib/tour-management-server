@@ -10,10 +10,7 @@ import { PAYMENT_STATUS } from "../payment/payment.interface";
 import { Tour } from "../tour/tour.model";
 import { sslService } from "../sslCommerz/sslCommerz.service";
 import { ISSLCommerz } from "../sslCommerz/sslCommerz.interface";
-
-const getTransactionId = () => {
-  return `Tran_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
-};
+import { getTransactionId } from "../../utils/getTransactionId";
 
 const createBooking = async (payload: Partial<IBooking>, userId: string) => {
   const session = await Booking.startSession();

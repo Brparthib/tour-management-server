@@ -4,7 +4,7 @@ import AppError from "../../errorHelpers/AppError";
 import { IAuthProvider, IUSER, Role } from "./user.interface";
 import { User } from "./user.model";
 import bcrypt from "bcryptjs";
-import { envVars } from "../../config/env";
+import { envVars } from "../../configs/env";
 
 const createUser = async (payload: Partial<IUSER>) => {
   const { email, password, ...rest } = payload;
@@ -47,6 +47,22 @@ const getAllUser = async () => {
   };
 };
 
+const getSingleUser = async (userId: string) => {
+  const user = await User.findById(userId).select("-password");
+
+  return {
+    data: user,
+  };
+};
+
+const getMe = async (userId: string) => {
+  const users = await User.findById(userId).select("-password");
+
+  return {
+    data: users,
+  };
+};
+
 const updateUser = async (
   userId: string,
   payload: Partial<IUSER>,
@@ -86,5 +102,7 @@ const updateUser = async (
 export const userServices = {
   createUser,
   getAllUser,
+  getSingleUser,
+  getMe,
   updateUser,
 };
