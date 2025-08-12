@@ -10,7 +10,7 @@ import AppError from "../../errorHelpers/AppError";
 import { JwtPayload } from "jsonwebtoken";
 import { setAuthCookie } from "../../utils/setCookie";
 import { createUserTokens } from "../../utils/userTokens";
-import { envVars } from "../../config/env";
+import { envVars } from "../../configs/env";
 
 const credentialsLogin = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -37,7 +37,7 @@ const credentialsLogin = catchAsync(
         data: {
           accessToken: userTokens.accessToken,
           refreshToken: userTokens.refreshToken,
-          user
+          user,
         },
       });
     })(req, res, next);
@@ -89,12 +89,12 @@ const logout = catchAsync(
   }
 );
 
-const resetPassword = catchAsync(
+const changePassword = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const decodedToken = req.user;
     const { oldPassword, newPassword } = req.body;
 
-    await authServices.resetPassword(
+    await authServices.changePassword(
       decodedToken as JwtPayload,
       oldPassword,
       newPassword
@@ -104,6 +104,49 @@ const resetPassword = catchAsync(
       success: true,
       statusCode: httpStatus.OK,
       message: "Password Changed Successfully",
+      data: null,
+    });
+  }
+);
+
+const setPassword = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const decodedToken = req.user as JwtPayload;
+    const { password } = req.body;
+
+    await authServices.setPassword(decodedToken.userId, password);
+
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStatus.OK,
+      message: "Password Set Successfully",
+      data: null,
+    });
+  }
+);
+
+const forgotPassword = catchAsync(async (req: Request, res: Response) => {
+  const { email } = req.body;
+  await authServices.forgotPassword(email);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: "Email Send Successfully",
+    data: null,
+  });
+});
+
+const resetPassword = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const decodedToken = req.user;
+
+    await authServices.resetPassword(req.body, decodedToken as JwtPayload);
+
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStatus.OK,
+      message: "Password Reset Successfully",
       data: null,
     });
   }
@@ -130,7 +173,6 @@ const googleCallBackController = catchAsync(
     if (!user) {
       throw new AppError(httpStatus.NOT_FOUND, "User Not Found");
     }
-    console.log(user);
 
     const tokenInfo = createUserTokens(user);
 
@@ -144,6 +186,9 @@ export const authControllers = {
   credentialsLogin,
   getNewAccessToken,
   logout,
+  changePassword,
+  setPassword,
+  forgotPassword,
   resetPassword,
   passportAuthenticate,
   googleCallBackController,

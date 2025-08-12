@@ -2,8 +2,9 @@
 import { Server } from "http";
 import mongoose from "mongoose";
 import app from "./app";
-import { envVars } from "./app/config/env";
+import { envVars } from "./app/configs/env";
 import { seedSuperAdmin } from "./app/utils/seedSuperAdmin";
+import { connectRedis } from "./app/configs/redis.config";
 
 let server: Server;
 
@@ -22,8 +23,9 @@ const startServer = async () => {
 };
 
 (async () => {
-  startServer();
-  seedSuperAdmin();
+  await connectRedis();
+  await startServer();
+  await seedSuperAdmin();
 })();
 
 // unhandled rejection error handler
