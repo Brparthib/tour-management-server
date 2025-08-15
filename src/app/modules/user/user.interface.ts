@@ -33,4 +33,5 @@ export interface IUSER {
   auths: IAuthProvider[];
   bookings?: Types.ObjectId[];
   guides?: Types.ObjectId[];
+  createdAt?: Date
 }
