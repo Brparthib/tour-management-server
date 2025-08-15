@@ -28,7 +28,7 @@ import { sendEmail } from "../../utils/sendEmail";
 
 //   const userTokens = createUserTokens(isUserExist);
 
-//   // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
 //   const { password: pass, ...rest } = isUserExist.toObject();
 
 //   return {
@@ -150,8 +150,6 @@ const forgotPassword = async (email: string) => {
       resetUiLink,
     },
   });
-
-  // http://localhost:3000/reset-password?id=6899d7e0035741ea1daee9cc&token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODk5ZDdlMDAzNTc0MWVhMWRhZWU5Y2MiLCJlbWFpbCI6ImJycGFydGhpYkBnbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc1NDk3NTQ0NCwiZXhwIjoxNzU0OTc2MDQ0fQ.QeT7_oiOtXochxaUbNjSwte3tqY3mV9OtVtEkGViRUI
 
   return {};
 };

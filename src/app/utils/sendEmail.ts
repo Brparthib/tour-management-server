@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import httpStatus from "http-status-codes";
 import nodemailer from "nodemailer";

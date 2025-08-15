@@ -22,7 +22,8 @@ export const createUserZodSchema = z.object({
     })
     .regex(/^(?=.*\d)/, {
       message: "Password must contain at least 1 number.",
-    }),
+    })
+    .optional(),
   phone: z
     .string({ invalid_type_error: "Phone number must be string." })
     .regex(/^(?:\+8801\d{9}|01\d{9})$/, {
@@ -42,19 +43,6 @@ export const updateZodSchema = z.object({
     .min(2, { message: "Name must be at least 2 characters." })
     .max(50, { message: "Name cannot exceed 50 characters." })
     .optional(),
-  password: z
-    .string({ invalid_type_error: "Password must be string." })
-    .min(8, { message: "Password must be at least 8 characters long." })
-    .regex(/^(?=.*[A-Z])/, {
-      message: "Password must be contain at least 1 uppercase letter.",
-    })
-    .regex(/^(?=.*[!@#$%^&*])/, {
-      message: "Password must contain at least 1 special character.",
-    })
-    .regex(/^(?=.*\d)/, {
-      message: "Password must contain at least 1 number.",
-    })
-    .optional(),
   phone: z
     .string({ invalid_type_error: "Phone number must be string." })
     .regex(/^(?:\+8801\d{9}|01\d{9})$/, {
@@ -72,8 +60,10 @@ export const updateZodSchema = z.object({
   isActive: z
     .string({ invalid_type_error: "isActive must be true or false" })
     .optional(),
-  isVerified: z.boolean({
-    invalid_type_error: "isVerified must be true or false",
-  }).optional(),
+  isVerified: z
+    .boolean({
+      invalid_type_error: "isVerified must be true or false",
+    })
+    .optional(),
   role: z.enum(Object.values(Role) as [string]).optional(),
 });
