@@ -3,7 +3,7 @@ import AppError from "../../errorHelpers/AppError";
 import { ITour, ITourType } from "./tour.interface";
 import { Tour, TourType } from "./tour.model";
 import { QueryBuilder } from "../../utils/queryBuilder";
-import { tourSearchableField } from "./tour.constant";
+import { tourSearchableField, tourTypeSearchableField } from "./tour.constant";
 import { deleteImageFromCloudinary } from "../../configs/cloudinary.config";
 
 const createTour = async (payload: ITour) => {
@@ -83,7 +83,7 @@ const updateTour = async (id: string, payload: Partial<ITour>) => {
       payload.deleteImages.map((url) => deleteImageFromCloudinary(url))
     );
   }
-  
+
   return updatedTour;
 };
 
@@ -101,18 +101,27 @@ const createTourType = async (payload: ITourType) => {
   return await TourType.create({ name: payload.name });
 };
 
-const getAllTourTypes = async () => {
-  const tourTypes = await TourType.find();
+const getAllTourTypes = async (query: Record<string, string>) => {
+  const queryBuilder = new QueryBuilder(TourType.find(), query);
+
+  const tourTypes = await queryBuilder
+    .search(tourTypeSearchableField)
+    .filter()
+    .sort()
+    .fields()
+    .paginate();
   if (!tourTypes) {
     throw new AppError(httpStatus.NOT_FOUND, "Tour Types Not Found!!");
   }
-  const totalTourTypes = await TourType.countDocuments();
+
+  const [data, meta] = await Promise.all([
+    tourTypes.build(),
+    queryBuilder.getMeta(),
+  ]);
 
   return {
-    data: tourTypes,
-    meta: {
-      total: totalTourTypes,
-    },
+    data,
+    meta,
   };
 };
 

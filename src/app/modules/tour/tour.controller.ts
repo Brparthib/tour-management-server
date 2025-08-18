@@ -73,14 +73,16 @@ const createTourType = catchAsync(async (req: Request, res: Response) => {
 });
 
 const getAllTourTypes = catchAsync(async (req: Request, res: Response) => {
-  const tourTypes = await tourServices.getAllTourTypes();
+  const query = req.query;
+  const tourTypes = await tourServices.getAllTourTypes(
+    query as Record<string, string>
+  );
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: "Tour Types Retrieved Successfully.",
-    data: tourTypes.data,
-    meta: tourTypes.meta,
+    data: tourTypes
   });
 });
 

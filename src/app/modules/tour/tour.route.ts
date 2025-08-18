@@ -36,7 +36,7 @@ router.delete(
 // ----------- Tour Type Routes ------------
 router.get("/tour-type", tourControllers.getAllTourTypes);
 router.post(
-  "/create-tour-type",
+  "/add-tour-type",
   checkAuth(Role.SUPER_ADMIN, Role.ADMIN),
   validateRequest(TourTypeZodSchema),
   tourControllers.createTourType
