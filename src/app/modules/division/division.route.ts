@@ -12,7 +12,7 @@ import { multerUpload } from "../../configs/multer.config";
 const router = Router();
 
 router.post(
-  "/create-division",
+  "/add-division",
   checkAuth(Role.SUPER_ADMIN, Role.ADMIN),
   multerUpload.single("file"),
   validateRequest(createDivisionZodSchema),

@@ -14,7 +14,7 @@ const router = Router();
 // ------------- Tour Routes --------------
 router.get("/", tourControllers.getAllTours);
 router.post(
-  "/create-tour",
+  "/add-tour",
   checkAuth(Role.SUPER_ADMIN, Role.ADMIN),
   multerUpload.array("files"),
   validateRequest(createTourZodSchema),

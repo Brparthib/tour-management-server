@@ -74,6 +74,11 @@ const updateDivision = async (id: string, payload: Partial<IDivision>) => {
 };
 
 const deleteDivision = async (id: string) => {
+  const existingDivision = await Division.findById(id);
+  if (existingDivision && existingDivision.thumbnail) {
+    await deleteImageFromCloudinary(existingDivision.thumbnail);
+  }
+
   await Division.findByIdAndDelete(id);
 
   return null;
